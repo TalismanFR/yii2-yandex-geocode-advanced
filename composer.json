@@ -1,0 +1,30 @@
+{
+    "name": "talismanfr/yii2-yandex-geocode-advanced",
+    "description": "In addition to working with the service, the extension can cache or save queries to the database to optimize access to the API.",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","geocode","yandex"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anatoliy Egorov",
+            "email": "anat-gor@ya.ru",
+			"role":"onedeveloper"
+        }
+    ],
+    "require": {
+		"php": ">=7.1.0",
+        "yiisoft/yii2": "~2.0.0",
+        "ext-curl": "*"
+    },
+    "require-dev": {
+        "codeception/base": "~2.3.0",
+        "codeception/verify": "~0.4.0",
+        "codeception/specify": "~0.4.6",
+        "phpunit/phpunit" : "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "talismanfr\\geocode\\": "src"
+        }
+    }
+}
