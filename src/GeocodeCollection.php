@@ -48,6 +48,8 @@ class GeocodeCollection implements Collection
         if(count($geos)>0){
             return array_shift($geos);
         }
+
+        return null;
     }
 
     /**
@@ -69,7 +71,12 @@ class GeocodeCollection implements Collection
         $data = ArrayHelper::getValue($geo_result, 'response.GeoObjectCollection.featureMember');
 
         if (!$data) {
-            throw new FormatResponseException('Error format response from query ' . $query);
+            $meta=ArrayHelper::getValue($geo_result,'response.GeoObjectCollection.metaDataProperty.GeocoderResponseMetaData');
+
+            if(!$meta) {
+                throw new FormatResponseException('Error format response from query ' . $query);
+            }
+
         }
 
         $geos = [];

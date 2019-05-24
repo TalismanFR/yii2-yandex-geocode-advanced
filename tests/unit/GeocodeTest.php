@@ -25,11 +25,6 @@ class GeocodeTest extends \Codeception\Test\Unit
 //        codecept_debug(json_decode($result,true));
         $this->tester->assertStringStartsWith('{"response":',$result,'Response not valid');
 
-//        //error api key
-//        $geo->apikey='invalid_api_key';
-//        $result=$geo->get('Moscow');
-//        $this->tester->assertStringStartsWith('{"error":',$result,'Response not valid');
-
         //with proxy
         $geo->useProxy=true;
 
