@@ -5,9 +5,7 @@ namespace talismanfr\geocode;
 
 
 use talismanfr\geocode\exeptions\ProxyConfException;
-use yii\db\Exception;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
 
 class Geocode implements \talismanfr\geocode\contracts\Geocode
 {
@@ -18,8 +16,9 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
 
     public $useProxy = false;
 
+    public $format = 'json';
+
     public $proxyConf = [
-        'schema' => 'tcp',
         'url' => '127.0.0.1',
         'port' => '3128',
         'login' => null,
@@ -32,25 +31,22 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
      * @return string
      * @throws ProxyConfException
      */
-    public function get($query, $params = []):string
+    public function get($query, $params = []): string
     {
         $params['geocode'] = $query;
 
         $url = $this->buildUrl($params);
 
         $curl = curl_init();
-        curl_setopt(CURLOPT_URL,$url);
+        curl_setopt($curl, CURLOPT_URL, $url);
 
-        curl_setopt_array($curl, [
-            CURLOPT_RETURNTRANSFER => true,
-            // CURLOPT_ENCODING => "deflate,gzip,none",
-            CURLOPT_HEADER => false,
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_VERBOSE => false,
-            CURLOPT_PROXY=>$proxy,
-            CURLOPT_PROXYPORT=>$port,
-            CURLOPT_PROXYUSERPWD=>\Yii::$app->params['proxy_login'].':'.\Yii::$app->params['proxy_password']
-        ]);
+        curl_setopt_array($curl, $this->getCurlConf());
+
+        $response = curl_exec($curl);
+
+        if (curl_error($curl)) {
+            codecept_debug(curl_error($curl));
+        }
 
         return $response;
     }
@@ -59,18 +55,20 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
      * @return resource A stream context resource.
      * @throws ProxyConfException
      */
-    private function getCurlConf():array
+    private function getCurlConf(): array
     {
-        $conf=[
-            CURLOPT_RETURNTRANSFER=>true,
-            CURLOPT_HEADER=>false,
-            CURLOPT_FOLLOWLOCATION=>false,
-            CURLOPT_VERBOSE=>false,
+        $conf = [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_VERBOSE => false,
         ];
 
-        if($this->useProxy){
-
+        if ($this->useProxy) {
+            $conf = array_merge($conf, $this->buildProxyConf());
         }
+
+        return $conf;
     }
 
     /**
@@ -80,24 +78,20 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
      */
     private function buildProxyConf(): array
     {
-        $schema = ArrayHelper::getValue($this->proxyConf, 'schema', 'tcp');
         $url = ArrayHelper::getValue($this->proxyConf, 'url');
-
         if (empty($url)) {
             throw new ProxyConfException('url param is empty');
         }
-
         $port = ArrayHelper::getValue($this->proxyConf, 'port', '3128');
 
-        $conf = ['proxy' => $schema . '://' . $url . ':' . $port, 'request_fulluri' => true];
+        $conf = [CURLOPT_PROXY => $url, CURLOPT_PROXYPORT => $port];
 
         $login = ArrayHelper::getValue($this->proxyConf, 'login');
         $password = ArrayHelper::getValue($this->proxyConf, 'password');
 
         if (!empty($login)) {
-            $auth = base64_encode($login . ':' . $password);
-
-            $conf['header'] = "Proxy-Authorization: Basic $auth";
+            $conf[CURLOPT_PROXYUSERNAME] = $login;
+            $conf[CURLOPT_PROXYPASSWORD] = $password;
         }
 
         return $conf;
@@ -110,7 +104,7 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
      */
     private function buildUrl(array $params)
     {
-        $params['format'] = 'json';
+        $params['format'] = $this->format;
 
         if (!empty($this->apikey)) {
             $params['apikey'] = $this->apikey;
