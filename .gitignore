@@ -32,3 +32,5 @@ phpunit.phar
 todo
 
 tests/_output/*
+
+ocular.phar

@@ -44,7 +44,7 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
 
         $response = curl_exec($curl);
 
-        return $response;
+        return (string)$response;
     }
 
     /**
