@@ -11,15 +11,21 @@ class GeocodeCollectionTest extends \Codeception\Test\Unit
     private $geocode;
 
 
-    private $badResponseFormatGeocode;
 
     protected function _before()
     {
         $this->geocode=new \talismanfr\geocode\Geocode();
-        $this->badResponseFormatGeocode=new BadGeocode();
     }
 
+    private function getBadResponseFormat(){
+        return $this->makeEmpty(\talismanfr\geocode\contracts\Geocode::class,
+            ['get'=>'{"bad_format":"response"}']);
+    }
 
+    private function getBadJsonFormat(){
+        return $this->makeEmpty(\talismanfr\geocode\contracts\Geocode::class,
+            ['get'=>[]]);
+    }
 
     protected function _after()
     {
@@ -39,11 +45,20 @@ class GeocodeCollectionTest extends \Codeception\Test\Unit
         $this->tester->assertEquals([],$geos);
 
         //test bad response format from geocode
-        $collection=new \talismanfr\geocode\GeocodeCollection($this->badResponseFormatGeocode);
+        $collection=new \talismanfr\geocode\GeocodeCollection($this->getBadResponseFormat());
         $this->tester->expectException(\talismanfr\geocode\exeptions\FormatResponseException::class,
             function()use($collection){
                 $collection->get('Новокузнецк');
             });
+
+        //test bad response JSON format from geocode
+        $collection=new \talismanfr\geocode\GeocodeCollection($this->getBadJsonFormat());
+        $this->tester->expectException(\talismanfr\geocode\exeptions\FormatResponseException::class,
+            function()use($collection){
+                $collection->get('Moscow');
+            });
+
+
     }
 
     public function testOne(){

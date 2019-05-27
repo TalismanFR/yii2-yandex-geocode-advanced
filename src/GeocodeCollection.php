@@ -65,7 +65,7 @@ class GeocodeCollection implements Collection
         try {
             $geo_result = json_decode((string)$geo_result, true);
         } catch (\Exception $e) {
-            return [];
+            throw new FormatResponseException($e->getMessage());
         }
 
         $data = ArrayHelper::getValue($geo_result, 'response.GeoObjectCollection.featureMember');

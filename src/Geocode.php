@@ -44,10 +44,6 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
 
         $response = curl_exec($curl);
 
-        if (curl_error($curl)) {
-            codecept_debug(curl_error($curl));
-        }
-
         return $response;
     }
 
@@ -65,7 +61,8 @@ class Geocode implements \talismanfr\geocode\contracts\Geocode
         ];
 
         if ($this->useProxy) {
-            $conf = array_merge($conf, $this->buildProxyConf());
+
+            $conf = ArrayHelper::merge($conf, $this->buildProxyConf());
         }
 
         return $conf;

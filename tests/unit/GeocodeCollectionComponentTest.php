@@ -25,8 +25,9 @@ class GeocodeCollectionComponentTest extends \Codeception\Test\Unit
 
     public function testGet(){
 
-        $collection=Yii::createObject(['class'=>\talismanfr\geocode\GeocodeCollectionComponent::class]);
+//        $collection=Yii::createObject(['class'=>\talismanfr\geocode\GeocodeCollectionComponent::class]);
 
+        $collection=new \talismanfr\geocode\GeocodeCollectionComponent();
         $geos=$collection->get('Moscow');
 
         $this->assertArrayHasKey(0,$geos);

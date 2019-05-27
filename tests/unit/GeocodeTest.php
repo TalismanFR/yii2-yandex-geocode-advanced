@@ -22,7 +22,6 @@ class GeocodeTest extends \Codeception\Test\Unit
 
 
         $result=$geo->get('Новокузнецк');
-//        codecept_debug(json_decode($result,true));
         $this->tester->assertStringStartsWith('{"response":',$result,'Response not valid');
 
         //with proxy
@@ -40,12 +39,11 @@ class GeocodeTest extends \Codeception\Test\Unit
 
 
 //        $geo->proxyConf=[
-//            'url'=>'88.82.73.242',
-//            'port'=>'37837'
+//            'url'=>'195.123.228.201',
+//            'port'=>'3128',
 //        ];
 //
-//        $result=$geo->get('Новокузнецк');
-//
+//        $result=$geo->get('moscow');
 //        $this->tester->assertStringStartsWith('{"response":',$result,'Response not valid');
     }
 }
