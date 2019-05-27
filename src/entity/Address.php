@@ -74,8 +74,7 @@ class Address
 
     public function getKindName($kind){
         if(isset($this->components[$kind])){
-            $component=ArrayHelper::getValue($this->components,$kind.'.0');
-
+            $component=$this->components[$kind][count($this->components[$kind])-1];
             return $component->getName();
         }
 

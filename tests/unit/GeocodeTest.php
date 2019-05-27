@@ -36,8 +36,6 @@ class GeocodeTest extends \Codeception\Test\Unit
             $geo->get('Новокузнецк');
         });
 
-
-
 //        $geo->proxyConf=[
 //            'url'=>'195.123.228.201',
 //            'port'=>'3128',
