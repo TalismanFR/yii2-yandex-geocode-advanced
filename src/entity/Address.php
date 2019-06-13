@@ -42,8 +42,8 @@ class Address
             $components[$kind][]=$component;
         }
 
-        $country_code=ArrayHelper::getValue($state,'country_code');
-        $formatted=ArrayHelper::getValue($state,'formatted');
+        $country_code=ArrayHelper::getValue($state,'country_code','');
+        $formatted=ArrayHelper::getValue($state,'formatted','');
 
         return new self($country_code,$formatted,$components);
     }
