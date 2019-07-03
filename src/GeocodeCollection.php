@@ -53,12 +53,12 @@ class GeocodeCollection implements Collection
     }
 
     /**
-     * @param $query
+     * @param string $query
      * @param array $params
      * @return array
      * @throws FormatResponseException
      */
-    private function find($query, $params = []): array
+    private function find(string $query, $params = []): array
     {
         $geo_result = $this->geocode->get($query, $params);
 
